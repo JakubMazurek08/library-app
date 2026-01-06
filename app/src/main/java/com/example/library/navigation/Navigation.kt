@@ -2,6 +2,7 @@ package com.example.library.navigation
 
 import android.net.Uri
 import androidx.compose.runtime.Composable
+import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -43,11 +44,15 @@ fun BookExplorerNavigation(
             HomeScreen(
                 repository = repository,
                 onBookClick = { book ->
-                    val route = Screen.BookDetail.createRoute(book)
-                    navController.navigate(route)
+                    if (navController.currentBackStackEntry?.lifecycle?.currentState == Lifecycle.State.RESUMED) {
+                        val route = Screen.BookDetail.createRoute(book)
+                        navController.navigate(route)
+                    }
                 },
                 onNavigateToFavorites = {
-                    navController.navigate(Screen.Favorites.route)
+                    if (navController.currentBackStackEntry?.lifecycle?.currentState == Lifecycle.State.RESUMED) {
+                        navController.navigate(Screen.Favorites.route)
+                    }
                 }
             )
         }
@@ -89,7 +94,9 @@ fun BookExplorerNavigation(
                 repository = repository,
                 favoritesManager = favoritesManager,
                 onNavigateBack = {
-                    navController.popBackStack()
+                    if (navController.currentBackStackEntry?.lifecycle?.currentState == Lifecycle.State.RESUMED) {
+                        navController.popBackStack()
+                    }
                 }
             )
         }
@@ -99,14 +106,17 @@ fun BookExplorerNavigation(
             FavoritesScreen(
                 favoritesManager = favoritesManager,
                 onBookClick = { book ->
-                    val route = Screen.BookDetail.createRoute(book)
-                    navController.navigate(route)
+                    if (navController.currentBackStackEntry?.lifecycle?.currentState == Lifecycle.State.RESUMED) {
+                        val route = Screen.BookDetail.createRoute(book)
+                        navController.navigate(route)
+                    }
                 },
                 onNavigateBack = {
-                    navController.popBackStack()
+                    if (navController.currentBackStackEntry?.lifecycle?.currentState == Lifecycle.State.RESUMED) {
+                        navController.popBackStack()
+                    }
                 }
             )
         }
     }
 }
-
