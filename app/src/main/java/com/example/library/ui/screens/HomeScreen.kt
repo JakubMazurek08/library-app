@@ -5,6 +5,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -19,6 +20,9 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -51,6 +55,26 @@ fun HomeScreen(
     val pageSize = 20
     val maxRandomOffset = 500
     
+    // Theme-aware radial gradient with vibrant accent colors
+    val isDark = isSystemInDarkTheme()
+    val backgroundBrush = Brush.radialGradient(
+        colors = if (isDark) {
+            listOf(
+                MaterialTheme.colorScheme.tertiary.copy(alpha = 0.5f),
+                MaterialTheme.colorScheme.secondary.copy(alpha = 0.25f),
+                MaterialTheme.colorScheme.background
+            )
+        } else {
+            listOf(
+                MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 0.5f),
+                MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.25f),
+                MaterialTheme.colorScheme.background
+            )
+        },
+        center = Offset(x = 600f, y = -400f),
+        radius = 3000f
+    )
+
     // Helper functions
     fun getRandomOffset(): Int {
         val maxPages = maxRandomOffset / pageSize
@@ -168,7 +192,7 @@ fun HomeScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
+            .background(backgroundBrush)
     ) {
         Row(
             modifier = Modifier
@@ -288,7 +312,11 @@ fun SearchBar(
             }
         },
         singleLine = true,
-        shape = RoundedCornerShape(12.dp)
+        shape = RoundedCornerShape(12.dp),
+        colors = OutlinedTextFieldDefaults.colors(
+            unfocusedContainerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.5f),
+            focusedContainerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.8f)
+        )
     )
 }
 
@@ -524,4 +552,3 @@ fun EmptyView() {
         }
     }
 }
-
